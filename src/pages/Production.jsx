@@ -195,8 +195,8 @@ export default function Production() {
         materialUsageInserts.push({
           production_run_id: productionRunId,
           raw_material_id: bomItem.material_id,
-          qty_used: qtyUsed,
-          qty_required: bomItem.qty_per_unit,
+          actual_qty: qtyUsed,
+          expected_qty: bomItem.qty_per_unit * parseFloat(qtyAccepted),
           waste_percentage: usage.waste_percentage
         })
 

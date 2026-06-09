@@ -67,7 +67,7 @@ export default function Dashboard() {
 
       const todayAccepted = todayRuns.reduce((s, r) => s + (r.qty_accepted ?? 0), 0)
 
-      // ── 2. Today's waste % — derived from qty_used vs qty_required ────
+      // ── 2. Today's waste % — derived from actual_qty vs expected_qty ────
       // Get today's run IDs first, then fetch their material usage
       const todayRunIds = (todayRuns || []).map(r => r.id).filter(Boolean)
 
@@ -75,17 +75,17 @@ export default function Dashboard() {
       if (todayRunIds.length > 0) {
         const { data: todayUsage, error: e2 } = await supabase
           .from('production_material_usage')
-          .select('qty_used, qty_required')
+          .select('actual_qty, expected_qty')
           .in('production_run_id', todayRunIds)
 
         if (e2) throw new Error('Today usage: ' + e2.message)
 
         const withWaste = (todayUsage || []).filter(
-          u => u.qty_required != null && u.qty_required > 0 && u.qty_used != null
+          u => u.expected_qty != null && u.expected_qty > 0 && u.actual_qty != null
         )
         if (withWaste.length > 0) {
           const totalWaste = withWaste.reduce((s, u) => {
-            const w = Math.max(0, ((u.qty_used - u.qty_required) / u.qty_required) * 100)
+            const w = Math.max(0, ((u.actual_qty - u.expected_qty) / u.expected_qty) * 100)
             return s + w
           }, 0)
           avgWaste = (totalWaste / withWaste.length).toFixed(1)
