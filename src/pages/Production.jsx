@@ -197,7 +197,6 @@ export default function Production() {
           material_id: bomItem.material_id,
           actual_qty: qtyUsed,
           expected_qty: bomItem.qty_per_unit * parseFloat(qtyAccepted),
-          waste_percentage: usage.waste_percentage
         })
 
         // Track stock deduction
