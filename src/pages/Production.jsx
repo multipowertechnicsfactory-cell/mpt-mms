@@ -70,9 +70,9 @@ export default function Production() {
       const updated = { ...prev }
       bomMaterials.forEach(item => {
         const entry = updated[item.id]
-        if (entry?.qty_used) {
+        if (entry?.actual_qty) {
           const perUnit = parseFloat(item.qty_per_unit)
-          const qty = parseFloat(entry.qty_used)
+          const qty = parseFloat(entry.actual_qty)
           const acc = parseFloat(qtyAccepted)
           if (perUnit && qty && acc) {
             const expected = perUnit * acc
@@ -99,7 +99,7 @@ export default function Production() {
       // Initialize material usages
       const usages = {}
       data.forEach(item => {
-        usages[item.id] = { qty_used: '', waste_percentage: 0 }
+        usages[item.id] = { actual_qty: '', waste_percentage: 0 }
       })
       setMaterialUsages(usages)
     } catch (error) {
@@ -127,7 +127,7 @@ export default function Production() {
 
     setMaterialUsages(prev => ({
       ...prev,
-      [bomId]: { qty_used: value, waste_percentage: parseFloat(waste) }
+      [bomId]: { actual_qty: value, waste_percentage: parseFloat(waste) }
     }))
   }
 
@@ -140,7 +140,7 @@ export default function Production() {
     if (!qtyRejected && qtyRejected !== 0) return 'Please enter quantity rejected'
 
     for (const bomItem of bomMaterials) {
-      if (!materialUsages[bomItem.id]?.qty_used) {
+      if (!materialUsages[bomItem.id]?.actual_qty) {
         return `Please enter quantity used for ${bomItem.raw_materials.name}`
       }
     }
@@ -189,7 +189,7 @@ export default function Production() {
 
       for (const bomItem of bomMaterials) {
         const usage = materialUsages[bomItem.id]
-        const qtyUsed = parseFloat(usage.qty_used)
+        const qtyUsed = parseFloat(usage.actual_qty)
 
         // Record material usage
         materialUsageInserts.push({
@@ -472,7 +472,7 @@ export default function Production() {
                           <div className="flex items-center gap-2">
                             <input
                               type="number"
-                              value={materialUsages[item.id]?.qty_used || ''}
+                              value={materialUsages[item.id]?.actual_qty || ''}
                               onChange={(e) => handleMaterialInput(item.id, e.target.value)}
                               placeholder="0"
                               min="0"
