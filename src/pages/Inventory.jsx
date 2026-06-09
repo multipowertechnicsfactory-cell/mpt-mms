@@ -77,11 +77,10 @@ export default function Inventory() {
       const { error: movementError } = await supabase
         .from('stock_movements')
         .insert({
-          raw_material_id: stockInRow.id,
+          material_id: stockInRow.id,
           movement_type: 'purchase',
-          quantity: qty,
+          qty: qty,
           notes: stockInNote || null,
-          timestamp: new Date().toISOString(),
         })
 
       if (movementError) throw new Error(movementError.message)

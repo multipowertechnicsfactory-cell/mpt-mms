@@ -234,9 +234,9 @@ export default function Production() {
 
       // Record stock movements
       const movementInserts = stockUpdates.map(update => ({
-        raw_material_id: update.material_id,
+        material_id: update.material_id,
         movement_type: 'production_usage',
-        quantity: -update.qty_used,
+        qty: -update.qty_used,
         reference_id: productionRunId,
       }))
 
