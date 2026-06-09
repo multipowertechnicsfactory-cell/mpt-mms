@@ -194,7 +194,7 @@ export default function Production() {
         // Record material usage
         materialUsageInserts.push({
           production_run_id: productionRunId,
-          raw_material_id: bomItem.material_id,
+          material_id: bomItem.material_id,
           actual_qty: qtyUsed,
           expected_qty: bomItem.qty_per_unit * parseFloat(qtyAccepted),
           waste_percentage: usage.waste_percentage
