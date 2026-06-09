@@ -3,12 +3,14 @@ import Dashboard from './pages/Dashboard'
 import Production from './pages/Production'
 import BOM from './pages/BOM'
 import Inventory from './pages/Inventory'
+import Sales from './pages/Sales'
 
 const PAGES = [
   { key: 'dashboard', label: 'Dashboard' },
   { key: 'production', label: 'Production Run' },
   { key: 'bom', label: 'Bill of Materials' },
   { key: 'inventory', label: 'Inventory' },
+  { key: 'sales', label: 'Sales & Dispatch' },
 ]
 
 function App() {
@@ -42,6 +44,7 @@ function App() {
       {page === 'production' && <Production />}
       {page === 'bom' && <BOM />}
       {page === 'inventory' && <Inventory />}
+      {page === 'sales' && <Sales />}
     </div>
   )
 }
