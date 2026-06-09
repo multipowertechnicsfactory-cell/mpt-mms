@@ -63,6 +63,28 @@ export default function Production() {
     }
   }, [selectedProduct])
 
+  // Recalculate waste % when qty_accepted changes
+  useEffect(() => {
+    if (!bomMaterials.length) return
+    setMaterialUsages(prev => {
+      const updated = { ...prev }
+      bomMaterials.forEach(item => {
+        const entry = updated[item.id]
+        if (entry?.qty_used) {
+          const perUnit = parseFloat(item.qty_per_unit)
+          const qty = parseFloat(entry.qty_used)
+          const acc = parseFloat(qtyAccepted)
+          if (perUnit && qty && acc) {
+            const expected = perUnit * acc
+            const waste = qty <= expected ? 0 : (((qty - expected) / expected) * 100).toFixed(2)
+            updated[item.id] = { ...entry, waste_percentage: parseFloat(waste) }
+          }
+        }
+      })
+      return updated
+    })
+  }, [qtyAccepted])
+
   const fetchBOM = async (productId) => {
     try {
       const { data, error } = await supabase
@@ -86,18 +108,22 @@ export default function Production() {
   }
 
   // Calculate waste percentage
-  const calculateWaste = (qtyRequired, qtyUsed) => {
-    if (!qtyRequired || !qtyUsed) return 0
+  // expected = qty_per_unit × qty_accepted
+  // waste % = ((actual - expected) / expected) × 100
+  const calculateWaste = (qtyPerUnit, qtyUsed, accepted) => {
+    const perUnit = parseFloat(qtyPerUnit)
     const qty = parseFloat(qtyUsed)
-    const req = parseFloat(qtyRequired)
-    if (qty < req) return 0
-    return (((qty - req) / req) * 100).toFixed(2)
+    const acc = parseFloat(accepted)
+    if (!perUnit || !qty || !acc) return 0
+    const expected = perUnit * acc
+    if (qty <= expected) return 0
+    return (((qty - expected) / expected) * 100).toFixed(2)
   }
 
   // Handle material usage input
   const handleMaterialInput = (bomId, value) => {
     const bomItem = bomMaterials.find(m => m.id === bomId)
-    const waste = calculateWaste(bomItem.qty_per_unit, value)
+    const waste = calculateWaste(bomItem.qty_per_unit, value, qtyAccepted)
 
     setMaterialUsages(prev => ({
       ...prev,
@@ -439,7 +465,10 @@ export default function Production() {
                           {item.raw_materials.name}
                         </td>
                         <td className="px-4 py-3 text-gray-600">
-                          {item.qty_per_unit} {item.raw_materials.unit}
+                          {qtyAccepted
+                            ? `${(item.qty_per_unit * parseFloat(qtyAccepted)).toFixed(2)} ${item.raw_materials.unit}`
+                            : `${item.qty_per_unit} ${item.raw_materials.unit} × qty`
+                          }
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
