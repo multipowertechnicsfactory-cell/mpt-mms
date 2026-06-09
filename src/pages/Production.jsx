@@ -162,21 +162,20 @@ export default function Production() {
       setSubmitting(true)
       setMessage(null)
 
-      // Get product details for total quantity
-      const totalQty = parseFloat(qtyAccepted) + parseFloat(qtyRejected)
-
       // Insert production run
       const { data: productionData, error: productionError } = await supabase
         .from('production_runs')
         .insert({
+          batch_number: 'BATCH-' + Date.now(),
           product_id: selectedProduct,
           machine_id: selectedMachine,
+          run_date: new Date().toISOString().split('T')[0],
           shift: selectedShift,
           operator_name: operatorName,
+          qty_started: parseFloat(qtyAccepted) + parseFloat(qtyRejected),
           qty_accepted: parseFloat(qtyAccepted),
           qty_rejected: parseFloat(qtyRejected),
-          total_qty: totalQty,
-          timestamp: new Date().toISOString()
+          bom_version: 1,
         })
         .select()
 
@@ -240,7 +239,6 @@ export default function Production() {
         movement_type: 'production_usage',
         quantity: -update.qty_used,
         reference_id: productionRunId,
-        timestamp: new Date().toISOString()
       }))
 
       if (movementInserts.length > 0) {
