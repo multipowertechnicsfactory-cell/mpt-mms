@@ -56,7 +56,7 @@ export default function Sales() {
         supabase.from('products').select('*').order('name'),
         supabase
           .from('dispatches')
-          .select('*, dealers(name), dispatch_items(id, qty, unit_price, products(name))')
+          .select('*, dealers(name), dispatch_items(id, quantity, unit_price, products(name))')
           .order('dispatch_date', { ascending: false })
           .limit(20),
       ])
@@ -154,7 +154,7 @@ export default function Sales() {
       const itemsPayload = items.map(it => ({
         dispatch_id: dispatchId,
         product_id: it.product_id,
-        qty: parseFloat(it.qty),
+        quantity: parseFloat(it.qty),
         unit_price: parseFloat(it.unit_price),
         line_total: parseFloat(it.qty) * parseFloat(it.unit_price),
       }))
@@ -461,7 +461,7 @@ export default function Sales() {
                                   {(d.dispatch_items || []).map(it => (
                                     <tr key={it.id} className="border-t border-blue-100">
                                       <td className="py-1 pr-4 text-gray-700">{it.products?.name ?? '—'}</td>
-                                      <td className="py-1 pr-4 text-right text-gray-600">{it.qty}</td>
+                                      <td className="py-1 pr-4 text-right text-gray-600">{it.quantity}</td>
                                       <td className="py-1 pr-4 text-right text-gray-600">{fmtLKR(it.unit_price)}</td>
                                       <td className="py-1 text-right font-medium text-gray-700">{fmtLKR(it.line_total)}</td>
                                     </tr>
