@@ -43,36 +43,51 @@ export default function Sales() {
   const [message, setMessage] = useState(null)
   const [expandedRow, setExpandedRow] = useState(null)
 
-  useEffect(() => { fetchAll() }, [])
+  useEffect(() => {
+    fetchLookups()
+    fetchDispatches()
+  }, [])
 
-  // ── Fetch ────────────────────────────────────────────────────────────────
-  const fetchAll = async () => {
+  // ── Fetch dealers & products (independent of dispatches) ─────────────────
+  const fetchLookups = async () => {
+    const { data: dealerData } = await supabase
+      .from('dealers')
+      .select('*')
+      .eq('is_active', true)
+      .order('name')
+    setDealers(dealerData || [])
+
+    const { data: productData } = await supabase
+      .from('products')
+      .select('*')
+      .eq('is_active', true)
+      .order('name')
+    setProducts(productData || [])
+  }
+
+  // ── Fetch dispatches ──────────────────────────────────────────────────────
+  const fetchDispatches = async () => {
     try {
       setLoading(true)
       setMessage(null)
 
-      const [dealersRes, productsRes, dispatchesRes] = await Promise.all([
-        supabase.from('dealers').select('*').order('name'),
-        supabase.from('products').select('*').order('name'),
-        supabase
-          .from('dispatches')
-          .select('*, dealers(name), dispatch_items(id, quantity, unit_price, products(name))')
-          .order('dispatch_date', { ascending: false })
-          .limit(20),
-      ])
+      const { data, error } = await supabase
+        .from('dispatches')
+        .select('*, dealers(name), dispatch_items(id, quantity, unit_price, products(name))')
+        .order('dispatch_date', { ascending: false })
+        .limit(20)
 
-      if (dealersRes.error) throw new Error('Dealers: ' + dealersRes.error.message)
-      if (productsRes.error) throw new Error('Products: ' + productsRes.error.message)
-      if (dispatchesRes.error) throw new Error('Dispatches: ' + dispatchesRes.error.message)
-
-      setDealers(dealersRes.data || [])
-      setProducts(productsRes.data || [])
-      setDispatches(dispatchesRes.data || [])
+      if (error) throw new Error('Dispatches: ' + error.message)
+      setDispatches(data || [])
     } catch (err) {
       setMessage({ type: 'error', text: err.message })
     } finally {
       setLoading(false)
     }
+  }
+
+  const fetchAll = async () => {
+    await fetchDispatches()
   }
 
   // ── Item helpers ─────────────────────────────────────────────────────────
