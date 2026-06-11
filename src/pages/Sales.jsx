@@ -180,6 +180,7 @@ export default function Sales() {
 
       const dealerName = dealers.find(d => String(d.id) === String(dealerId))?.name ?? 'Dealer'
       showMsg('success', `Dispatch saved successfully! LKR ${total.toLocaleString('en-LK', { minimumFractionDigits: 2 })} recorded for ${dealerName}.`)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       resetForm()
       await fetchAll()
     } catch (err) {
@@ -359,7 +360,8 @@ export default function Sales() {
                           </td>
                           <td className="px-3 py-2">
                             <input type="number" value={it.unit_price} onChange={e => updateItem(idx, 'unit_price', e.target.value)}
-                              placeholder="0.00" min="0" step="0.01"
+                              placeholder="0.00" min="0" max="999999" step="0.01"
+                              onKeyDown={e => { if (e.target.value.replace('.','').replace('-','').length >= 8 && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) e.preventDefault() }}
                               className="w-32 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
                           </td>
                           <td className="px-3 py-2 text-right font-medium text-gray-700">
