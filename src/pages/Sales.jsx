@@ -229,18 +229,25 @@ export default function Sales() {
           <p className="text-gray-500">Create dispatch orders and track deliveries.</p>
         </div>
 
-        {/* Message — fixed at top so it's always visible */}
+        {/* Message — fixed overlay, always visible */}
         {message && (
-          <div style={{ position: 'fixed', top: '70px', left: 0, right: 0, zIndex: 9999, padding: '0 1rem' }}>
-            <div className={`max-w-5xl mx-auto p-4 rounded-lg flex items-start gap-3 shadow-lg ${
-              message.type === 'error' ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'
-            }`}>
-              {message.type === 'error'
-                ? <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                : <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-              }
-              <p className={message.type === 'error' ? 'text-red-700' : 'text-green-700'}>{message.text}</p>
-            </div>
+          <div style={{
+            position: 'fixed',
+            top: '65px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 99999,
+            backgroundColor: message.type === 'success' ? '#dcfce7' : '#fee2e2',
+            border: message.type === 'success' ? '1px solid #16a34a' : '1px solid #dc2626',
+            color: message.type === 'success' ? '#15803d' : '#dc2626',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            fontSize: '14px',
+            fontWeight: '500',
+            whiteSpace: 'nowrap'
+          }}>
+            {message.type === 'success' ? '✅' : '❌'} {message.text}
           </div>
         )}
 
@@ -359,13 +366,15 @@ export default function Sales() {
                             <input type="text" inputMode="numeric" value={it.qty}
                               onChange={e => { const val = e.target.value.replace(/[^0-9]/g, ''); if (val.length <= 6) updateItem(idx, 'qty', val) }}
                               placeholder="0"
-                              className="w-24 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                              style={{ width: '80px', minWidth: '80px', maxWidth: '80px' }}
+                              className="px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
                           </td>
                           <td className="px-3 py-2">
                             <input type="text" inputMode="decimal" value={it.unit_price}
                               onChange={e => { const val = e.target.value.replace(/[^0-9.]/g, ''); if (val.length <= 8) updateItem(idx, 'unit_price', val) }}
                               placeholder="0.00"
-                              className="w-32 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                              style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}
+                              className="px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
                           </td>
                           <td className="px-3 py-2 text-right font-medium text-gray-700">
                             {lineTotal > 0 ? fmtLKR(lineTotal) : '—'}
