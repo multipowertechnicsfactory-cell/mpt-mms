@@ -170,7 +170,6 @@ export default function Sales() {
         product_id: it.product_id,
         quantity: parseFloat(it.qty),
         unit_price: parseFloat(it.unit_price),
-        line_total: parseFloat(it.qty) * parseFloat(it.unit_price),
       }))
 
       const { error: itemsErr } = await supabase
@@ -477,7 +476,7 @@ export default function Sales() {
                                       <td className="py-1 pr-4 text-gray-700">{it.products?.name ?? '—'}</td>
                                       <td className="py-1 pr-4 text-right text-gray-600">{it.quantity}</td>
                                       <td className="py-1 pr-4 text-right text-gray-600">{fmtLKR(it.unit_price)}</td>
-                                      <td className="py-1 text-right font-medium text-gray-700">{fmtLKR(it.line_total)}</td>
+                                      <td className="py-1 text-right font-medium text-gray-700">{fmtLKR((it.quantity ?? 0) * (it.unit_price ?? 0))}</td>
                                     </tr>
                                   ))}
                                 </tbody>
