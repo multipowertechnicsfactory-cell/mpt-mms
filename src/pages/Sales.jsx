@@ -229,16 +229,18 @@ export default function Sales() {
           <p className="text-gray-500">Create dispatch orders and track deliveries.</p>
         </div>
 
-        {/* Message */}
+        {/* Message — fixed at top so it's always visible */}
         {message && (
-          <div className={`p-4 rounded-lg flex items-start gap-3 ${
-            message.type === 'error' ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'
-          }`}>
-            {message.type === 'error'
-              ? <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-              : <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-            }
-            <p className={message.type === 'error' ? 'text-red-700' : 'text-green-700'}>{message.text}</p>
+          <div style={{ position: 'fixed', top: '70px', left: 0, right: 0, zIndex: 9999, padding: '0 1rem' }}>
+            <div className={`max-w-5xl mx-auto p-4 rounded-lg flex items-start gap-3 shadow-lg ${
+              message.type === 'error' ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'
+            }`}>
+              {message.type === 'error'
+                ? <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                : <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+              }
+              <p className={message.type === 'error' ? 'text-red-700' : 'text-green-700'}>{message.text}</p>
+            </div>
           </div>
         )}
 
@@ -354,14 +356,15 @@ export default function Sales() {
                             </select>
                           </td>
                           <td className="px-3 py-2">
-                            <input type="number" value={it.qty} onChange={e => updateItem(idx, 'qty', e.target.value)}
-                              placeholder="0" min="1" max="999999" step="1" maxLength={6}
+                            <input type="text" inputMode="numeric" value={it.qty}
+                              onChange={e => { const val = e.target.value.replace(/[^0-9]/g, ''); if (val.length <= 6) updateItem(idx, 'qty', val) }}
+                              placeholder="0"
                               className="w-24 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
                           </td>
                           <td className="px-3 py-2">
-                            <input type="number" value={it.unit_price} onChange={e => updateItem(idx, 'unit_price', e.target.value)}
-                              placeholder="0.00" min="0" max="999999" step="0.01" maxLength={8}
-                              onKeyDown={e => { if (e.target.value.replace('.','').replace('-','').length >= 8 && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) e.preventDefault() }}
+                            <input type="text" inputMode="decimal" value={it.unit_price}
+                              onChange={e => { const val = e.target.value.replace(/[^0-9.]/g, ''); if (val.length <= 8) updateItem(idx, 'unit_price', val) }}
+                              placeholder="0.00"
                               className="w-32 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
                           </td>
                           <td className="px-3 py-2 text-right font-medium text-gray-700">
