@@ -150,7 +150,7 @@ export default function Sales() {
         discount: discountAmt,
         total,
         ...(paymentType === 'cheque' && {
-          cheque_number: chequeNumber,
+          cheque_no: chequeNumber,
           cheque_date: chequeDate,
           cheque_amount: parseFloat(chequeAmount),
         }),
@@ -483,9 +483,9 @@ export default function Sales() {
                                   ))}
                                 </tbody>
                               </table>
-                              {d.payment_type === 'cheque' && d.cheque_number && (
+                              {d.payment_type === 'cheque' && d.cheque_no && (
                                 <p className="mt-2 text-xs text-amber-700">
-                                  Cheque: <span className="font-semibold">{d.cheque_number}</span> — {fmtDate(d.cheque_date)} — {fmtLKR(d.cheque_amount)}
+                                  Cheque: <span className="font-semibold">{d.cheque_no}</span> — {fmtDate(d.cheque_date)} — {fmtLKR(d.cheque_amount)}
                                 </p>
                               )}
                             </td>
