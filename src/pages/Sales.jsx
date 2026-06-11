@@ -146,9 +146,8 @@ export default function Sales() {
         dispatch_date: dispatchDate,
         lorry_number: lorryNumber,
         payment_type: paymentType,
-        subtotal,
         discount: discountAmt,
-        total,
+        total_value: total,
         ...(paymentType === 'cheque' && {
           cheque_no: chequeNumber,
           cheque_date: chequeDate,
@@ -449,7 +448,7 @@ export default function Sales() {
                             </span>
                           </td>
                           <td className="px-4 py-3 text-right text-red-500">{d.discount > 0 ? fmtLKR(d.discount) : '—'}</td>
-                          <td className="px-4 py-3 text-right font-semibold text-gray-800">{fmtLKR(d.total)}</td>
+                          <td className="px-4 py-3 text-right font-semibold text-gray-800">{fmtLKR(d.total_value)}</td>
                           <td className="px-4 py-3 text-center text-gray-400">
                             <span className="flex items-center justify-center gap-1">
                               {d.dispatch_items?.length ?? 0}
