@@ -178,7 +178,8 @@ export default function Sales() {
 
       if (itemsErr) throw new Error(itemsErr.message)
 
-      showMsg('success', 'Dispatch saved successfully!')
+      const dealerName = dealers.find(d => String(d.id) === String(dealerId))?.name ?? 'Dealer'
+      showMsg('success', `Dispatch saved successfully! LKR ${total.toLocaleString('en-LK', { minimumFractionDigits: 2 })} recorded for ${dealerName}.`)
       resetForm()
       await fetchAll()
     } catch (err) {
@@ -202,7 +203,7 @@ export default function Sales() {
 
   const showMsg = (type, text) => {
     setMessage({ type, text })
-    if (type === 'success') setTimeout(() => setMessage(null), 3000)
+    if (type === 'success') setTimeout(() => setMessage(null), 4000)
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
